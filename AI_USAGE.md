@@ -1,22 +1,17 @@
-# AI usage
-
-Keep all three headings exactly as they are. If this file is missing or any heading is
-missing, the grader stops and gives 0 ("AI_USAGE.md missing or incomplete"). The content
-is not scored, but your Track Mentor reads it and the W8 defence can ask about it.
+# AI Usage
 
 ## Tools
 
-<!-- Which tools you used (ChatGPT, Copilot, Claude, Cursor, none...) and for which parts. -->
+- ChatGPT: Used to review the task requirements and help implement the SQLAlchemy models, Alembic migration, and FastAPI endpoints.
+- Local pytest: Used to test the implementation against the provided tests.
 
 ## What AI got wrong
 
-<!-- At least one thing an assistant got wrong that you changed, and how you noticed
-(a test failed, the docs said otherwise, you ran it). -->
+- An early draft included an unused Text import. I checked the required schema and kept memo as a nullable String(140).
+- I reviewed the implementation to ensure the idempotency record is saved in the same database transaction as the transfer.
 
 ## In my own words
 
-<!-- Answer without AI, one or two sentences each. -->
+1. A transfer to someone else's account returns 404 instead of 403 to avoid revealing whether that account exists or belongs to another customer. Returning 403 could reveal information about another customer's account.
 
-1. Why does a transfer to someone else's account return 404 and not 403?
-
-2. What would happen to a customer if your idempotency record were written in a separate transaction after the transfer?
+2. If the idempotency record were saved in a separate transaction after the transfer, the transfer could succeed while saving the record fails. A retry might then create another transfer and charge the customer twice.
